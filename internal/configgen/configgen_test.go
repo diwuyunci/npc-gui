@@ -212,3 +212,29 @@ func TestParseCommandDotSlashNpc(t *testing.T) {
 		t.Errorf("name = %q", p.Name)
 	}
 }
+
+func TestParseCommandCopiedFormatting(t *testing.T) {
+	raw := "./npc －server＝“198.51.100.10:30050” -vkey＝“test-vkey-value” -type＝“tcp”"
+	preview := ParseCommand(raw)
+	if len(preview.Errors) > 0 {
+		t.Fatalf("errors: %v", preview.Errors)
+	}
+	if len(preview.Candidates) != 1 {
+		t.Fatalf("candidates = %d, want 1", len(preview.Candidates))
+	}
+	p := preview.Candidates[0].Profile
+	if p.Server != "198.51.100.10:30050" || p.VKey != "test-vkey-value" || p.ConnType != "tcp" {
+		t.Fatalf("unexpected profile: %+v", p)
+	}
+}
+
+func TestParseCommandSpacedEquals(t *testing.T) {
+	raw := `npc -server = "198.51.100.10:30050" -vkey "test-vkey-value" -type tcp`
+	preview := ParseCommand(raw)
+	if len(preview.Errors) > 0 {
+		t.Fatalf("errors: %v", preview.Errors)
+	}
+	if len(preview.Candidates) != 1 || preview.Candidates[0].Profile.Server != "198.51.100.10:30050" {
+		t.Fatalf("unexpected preview: %+v", preview)
+	}
+}

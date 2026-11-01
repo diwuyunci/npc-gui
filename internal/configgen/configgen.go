@@ -470,9 +470,27 @@ func ReadConfig(path string) (string, error) {
 
 // TokenizeCommand splits a pasted command while respecting quotes.
 func TokenizeCommand(raw string) []string {
-	raw = strings.ReplaceAll(raw, "\ufeff", "")
-	raw = strings.ReplaceAll(raw, "，", ",")
-	raw = strings.ReplaceAll(raw, "：", ":")
+	raw = strings.NewReplacer(
+		"\ufeff", "",
+		"\u200b", "",
+		"\u200c", "",
+		"\u200d", "",
+		"\u2060", "",
+		"，", ",",
+		"：", ":",
+		"\u201c", "\"",
+		"\u201d", "\"",
+		"\u2018", "'",
+		"\u2019", "'",
+		"\u300c", "\"",
+		"\u300d", "\"",
+		"\u300e", "'",
+		"\u300f", "'",
+		"\uff0d", "-",
+		"\u2013", "-",
+		"\u2014", "-",
+		"\uff1d", "=",
+	).Replace(raw)
 	var out []string
 	var cur strings.Builder
 	var quote rune
@@ -571,9 +589,15 @@ func parseFlags(tokens []string) parsedFlags {
 			}
 			continue
 		}
-		if value == "" && i+1 < len(tokens) && !strings.HasPrefix(tokens[i+1], "-") {
-			value = tokens[i+1]
-			i++
+		if value == "" && i+1 < len(tokens) {
+			next := tokens[i+1]
+			if next == "=" && i+2 < len(tokens) {
+				value = tokens[i+2]
+				i += 2
+			} else if !strings.HasPrefix(next, "-") {
+				value = next
+				i++
+			}
 		}
 		if canonical == "config" {
 			pf.ignored = append(pf.ignored, "config")
@@ -597,7 +621,13 @@ func ParseCommand(raw string) model.ImportPreview {
 	server := strings.TrimSpace(pf.values["server"])
 	vkey := strings.TrimSpace(pf.values["vkey"])
 	if server == "" || vkey == "" {
-		result.Errors = append(result.Errors, "命令中缺少 -server 或 -vkey")
+		message := "命令中缺少 -server 或 -vkey"
+		if len(pf.order) > 0 {
+			message += "（已识别参数：" + strings.Join(pf.order, "、") + "）"
+		} else {
+			message += "（未识别到以 - 开头的参数）"
+		}
+		result.Errors = append(result.Errors, message)
 		return result
 	}
 	servers := splitList(server)

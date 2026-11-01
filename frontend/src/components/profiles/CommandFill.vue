@@ -19,8 +19,8 @@ const error = ref('')
 const warning = ref('')
 let timer: number | undefined
 
-async function parse(): Promise<void> {
-  const raw = command.value.trim()
+async function parse(rawInput?: string): Promise<void> {
+  const raw = (rawInput ?? command.value).trim()
   if (!raw) {
     error.value = '请先粘贴 NPS 启动命令'
     return
@@ -57,11 +57,12 @@ function clearFeedback(): void {
   warning.value = ''
 }
 
-function onPaste(): void {
+function onPaste(event: ClipboardEvent): void {
+  const pasted = event.clipboardData?.getData('text') ?? ''
   clearFeedback()
   window.clearTimeout(timer)
   timer = window.setTimeout(() => {
-    void parse()
+    void parse(pasted || undefined)
   }, 30)
 }
 
@@ -89,9 +90,9 @@ onBeforeUnmount(() => window.clearTimeout(timer))
         aria-label="NPS 启动命令"
         @input="clearFeedback"
         @paste="onPaste"
-        @keydown.enter.prevent="parse"
+        @keydown.enter.prevent="parse()"
       />
-      <button class="btn btn-secondary btn-sm" type="button" :disabled="loading" @click="parse">
+      <button class="btn btn-secondary btn-sm" type="button" :disabled="loading" @click="parse()">
         <span v-if="loading" class="spinner" />
         <ScanLine v-else :size="13" />
         解析填充
