@@ -58,8 +58,7 @@ func New(ctrl Controller) *Tray {
 
 // Start attaches the icon to the current Cocoa/Windows event loop.
 func (t *Tray) Start() {
-	start, _ := systray.RunWithExternalLoop(t.onReady, func() {})
-	start()
+	startTray(t.onReady, func() {})
 }
 
 // Stop releases the tray menu. The process must already be exiting.
@@ -67,6 +66,7 @@ func (t *Tray) Stop() {
 	t.mu.Lock()
 	t.ready = false
 	t.mu.Unlock()
+	stopTrayIcon()
 }
 
 func (t *Tray) onReady() {
@@ -79,6 +79,9 @@ func (t *Tray) onReady() {
 		systray.SetIcon(trayIcon)
 	}
 	systray.SetTooltip("NPC 客户端")
+	if runtime.GOOS == "windows" {
+		systray.SetOnTapped(t.ctrl.ShowWindow)
+	}
 
 	header := systray.AddMenuItem("NPC 客户端", "NPC GUI")
 	header.Disable()

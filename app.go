@@ -1231,7 +1231,7 @@ func (a *App) beforeClose(ctx context.Context) bool {
 		return false
 	}
 	settings := a.currentSettings()
-	if settings.TrayEnabled && settings.MinimizeToTray && a.trayActive() {
+	if settings.TrayEnabled && settings.MinimizeToTray && a.trayStarted() {
 		wailsRuntime.WindowHide(ctx)
 		return true
 	}

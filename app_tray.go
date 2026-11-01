@@ -68,6 +68,13 @@ func (a *App) trayActive() bool {
 	return t != nil && t.Ready()
 }
 
+func (a *App) trayStarted() bool {
+	a.mu.RLock()
+	t := a.tray
+	a.mu.RUnlock()
+	return t != nil
+}
+
 func (a *App) updateTray() {
 	a.mu.RLock()
 	t := a.tray

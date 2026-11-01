@@ -153,8 +153,11 @@ async function parseCommand(): Promise<void> {
   }
   parsing.value = true
   try {
-    preview.value = await backend.importCommand(command.value)
-    if (preview.value.errors.length) app.toast('error', '命令解析失败', preview.value.errors[0])
+    const result = await backend.importCommand(command.value)
+    const candidates = result.candidates ?? []
+    const errors = result.errors ?? []
+    preview.value = { ...result, candidates, warnings: result.warnings ?? [], errors }
+    if (errors.length) app.toast('error', '命令解析失败', errors[0])
   } catch (err) {
     app.toast('error', '命令解析失败', errorMessage(err))
   } finally {
@@ -163,7 +166,7 @@ async function parseCommand(): Promise<void> {
 }
 
 async function importCommand(): Promise<void> {
-  if (!preview.value?.candidates.length) {
+  if (!preview.value?.candidates?.length) {
     await parseCommand()
     return
   }
@@ -397,16 +400,16 @@ function skip(): void {
                 <Sparkles v-else :size="13" />
                 解析命令
               </button>
-              <span v-if="preview" class="hint">{{ preview.candidates.length }} 个连接</span>
+              <span v-if="preview" class="hint">{{ preview.candidates?.length ?? 0 }} 个连接</span>
             </div>
-            <div v-if="preview?.errors.length" class="error-box">
+            <div v-if="preview?.errors?.length" class="error-box">
               <CircleAlert :size="14" />
               <span>{{ preview.errors[0] }}</span>
             </div>
-            <div v-if="preview?.warnings.length" class="warn-box">
+            <div v-if="preview?.warnings?.length" class="warn-box">
               <span>{{ preview.warnings[0] }}</span>
             </div>
-            <div v-if="preview?.candidates.length" class="parsed-list">
+            <div v-if="preview?.candidates?.length" class="parsed-list">
               <div v-for="candidate in preview.candidates" :key="candidate.profile.server" class="parsed-item">
                 <span class="dot dot-online" />
                 <span class="parsed-main">
@@ -437,7 +440,7 @@ function skip(): void {
               v-else
               class="btn btn-primary"
               type="button"
-              :disabled="saving || !preview?.candidates.length"
+              :disabled="saving || !preview?.candidates?.length"
               @click="importCommand"
             >
               <span v-if="saving" class="spinner" />

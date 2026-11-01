@@ -30,20 +30,23 @@ async function parse(rawInput?: string): Promise<void> {
   warning.value = ''
   try {
     const preview = await backend.importCommand(raw)
-    if (preview.errors.length) {
-      error.value = preview.errors[0]
+    const candidates = preview.candidates ?? []
+    const errors = preview.errors ?? []
+    const warnings = preview.warnings ?? []
+    if (errors.length) {
+      error.value = errors[0]
       return
     }
-    if (!preview.candidates.length) {
+    if (!candidates.length) {
       error.value = '没有从命令中识别到连接'
       return
     }
-    emit('parsed', preview.candidates[0].profile)
-    if (preview.candidates.length > 1) {
+    emit('parsed', candidates[0].profile)
+    if (candidates.length > 1) {
       warning.value =
-        '检测到 ' + preview.candidates.length + ' 个服务端，已填充第一个；批量导入请使用「导入命令」。'
-    } else if (preview.warnings.length) {
-      warning.value = preview.warnings[0]
+        '检测到 ' + candidates.length + ' 个服务端，已填充第一个；批量导入请使用「导入命令」。'
+    } else if (warnings.length) {
+      warning.value = warnings[0]
     }
   } catch (err) {
     error.value = errorMessage(err)

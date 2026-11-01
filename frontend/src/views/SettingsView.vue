@@ -7,6 +7,7 @@ import {
   ExternalLink,
   FileText,
   Info,
+  LogOut,
   Power,
   RefreshCw,
   Save,
@@ -219,6 +220,9 @@ function openExternal(url?: string): void {
           </button>
           <button class="btn btn-ghost btn-sm" type="button" @click="copyDiagnostics">
             <Copy :size="13" /> 复制诊断
+          </button>
+          <button class="btn btn-danger btn-sm" type="button" @click="app.confirmQuit">
+            <LogOut :size="13" /> 退出应用
           </button>
         </div>
 

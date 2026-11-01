@@ -20,7 +20,7 @@ const selected = ref<boolean[]>([])
 
 const chosen = computed(() => {
   if (!preview.value) return []
-  return preview.value.candidates.filter((_, index) => selected.value[index])
+  return (preview.value.candidates ?? []).filter((_, index) => selected.value[index])
 })
 
 watch(
@@ -43,9 +43,11 @@ async function parse(): Promise<void> {
   parsing.value = true
   try {
     const result = await backend.importCommand(raw.value)
-    preview.value = result
-    selected.value = result.candidates.map((candidate) => candidate.selected)
-    if (result.errors.length) app.toast('error', '命令解析失败', result.errors[0])
+    const candidates = result.candidates ?? []
+    const errors = result.errors ?? []
+    preview.value = { ...result, candidates, warnings: result.warnings ?? [], errors }
+    selected.value = candidates.map((candidate) => candidate.selected)
+    if (errors.length) app.toast('error', '命令解析失败', errors[0])
   } catch (err) {
     app.toast('error', '命令解析失败', errorMessage(err))
   } finally {
@@ -109,25 +111,25 @@ async function commit(): Promise<void> {
           解析命令
         </button>
         <span v-if="preview" class="subtle small">
-          识别到 {{ preview.candidates.length }} 个连接
+          识别到 {{ (preview.candidates?.length ?? 0) }} 个连接
         </span>
       </div>
 
-      <div v-if="preview?.errors.length" class="notice notice-error">
+      <div v-if="preview?.errors?.length" class="notice notice-error">
         <CircleAlert :size="15" />
         <div>
           <p v-for="error in preview.errors" :key="error">{{ error }}</p>
         </div>
       </div>
 
-      <div v-if="preview?.warnings.length" class="notice notice-warn">
+      <div v-if="preview?.warnings?.length" class="notice notice-warn">
         <TriangleAlert :size="15" />
         <div>
           <p v-for="warning in preview.warnings" :key="warning">{{ warning }}</p>
         </div>
       </div>
 
-      <div v-if="preview?.candidates.length" class="candidate-list">
+      <div v-if="preview?.candidates?.length" class="candidate-list">
         <button
           v-for="(candidate, index) in preview.candidates"
           :key="index"
@@ -148,7 +150,7 @@ async function commit(): Promise<void> {
         </button>
       </div>
 
-      <div v-if="preview && !preview.candidates.length && !preview.errors.length" class="empty">
+      <div v-if="preview && !(preview.candidates?.length ?? 0) && !preview.errors?.length" class="empty">
         <p>没有识别到连接，请检查命令格式。</p>
       </div>
     </div>

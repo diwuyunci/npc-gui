@@ -104,24 +104,28 @@ jobs:
           ls -la
           sha256sum * > checksums.txt
           cat checksums.txt
+      - name: Prepare release notes
+        shell: bash
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          {
+            echo "### 安装"
+            echo "- macOS: 下载 npc-gui_..._darwin_<arch>.app.zip，解压后拖入“应用程序”。"
+            echo "- Windows: 下载 npc-gui_..._windows_amd64_installer.exe 安装，或使用 npc-gui_..._windows_amd64.exe 便携版。"
+            echo "- Linux: 下载 npc-gui_..._linux_amd64.tar.gz，解压后运行 npc-gui。"
+            echo
+            awk -v heading="## ${TAG}" '
+              $0 == heading { found = 1; next }
+              found && /^## / { exit }
+              found { print }
+            ' CHANGELOG.md
+          } > release-notes.md
+          cat release-notes.md
       - name: Publish GitHub release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.version.outputs.tag }}
           name: ${{ steps.version.outputs.tag }}
-          generate_release_notes: true
           files: dist/*
-          body: |
-            ## NPC 客户端 ${{ steps.version.outputs.tag }}
-
-            ### 安装
-            - macOS: 下载 npc-gui_..._darwin_<arch>.app.zip，解压后拖入“应用程序”。
-            - Windows: 下载 npc-gui_..._windows_amd64_installer.exe 安装，或使用 npc-gui_..._windows_amd64.exe 便携版。
-            - Linux: 下载 npc-gui_..._linux_amd64.tar.gz，解压后运行 npc-gui。
-
-            ### 自动更新
-            已安装的客户端会从本仓库的 GitHub Releases 检查新版本，校验 checksums.txt 与 GitHub asset digest 后替换自身并重启。
-
-            ### 说明
-            - 当前构建未做 Apple 公证与 Windows 代码签名，首次打开可能需要系统确认。
-            - npc 核心由上游 djylb/nps 单独管理，不包含在此资产中。
+          body_path: release-notes.md

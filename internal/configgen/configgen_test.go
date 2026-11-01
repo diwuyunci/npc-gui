@@ -238,3 +238,10 @@ func TestParseCommandSpacedEquals(t *testing.T) {
 		t.Fatalf("unexpected preview: %+v", preview)
 	}
 }
+
+func TestParseCommandReturnsEmptyCollections(t *testing.T) {
+	preview := ParseCommand(`./npc -server="198.51.100.10:30050" -vkey="test-vkey" -type="tcp"`)
+	if preview.Candidates == nil || preview.Warnings == nil || preview.Errors == nil {
+		t.Fatalf("collections must not be nil: %+v", preview)
+	}
+}

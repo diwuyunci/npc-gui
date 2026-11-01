@@ -611,7 +611,11 @@ func parseFlags(tokens []string) parsedFlags {
 
 // ParseCommand converts a pasted NPS launch command into profile candidates.
 func ParseCommand(raw string) model.ImportPreview {
-	result := model.ImportPreview{}
+	result := model.ImportPreview{
+		Candidates: []model.ImportCandidate{},
+		Warnings:   []string{},
+		Errors:     []string{},
+	}
 	tokens := TokenizeCommand(raw)
 	if len(tokens) == 0 {
 		result.Errors = append(result.Errors, "没有可解析的命令")

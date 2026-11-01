@@ -494,6 +494,10 @@ func (m *Manager) loadStaged() {
 	if staged.StagedBin == "" {
 		return
 	}
+	if staged.Version != "" && ghrelease.CompareVersions(staged.Version, m.currentVersion) <= 0 {
+		_ = os.Remove(filepath.Join(m.dataDir, "updates", "staged.json"))
+		return
+	}
 	if _, err := os.Stat(staged.StagedBin); err != nil {
 		return
 	}

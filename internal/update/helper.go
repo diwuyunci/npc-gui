@@ -1,6 +1,8 @@
 package update
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -69,6 +71,7 @@ func RunHelper(args []string) int {
 		writeResult(cfg, false, err.Error())
 		return 1
 	}
+	cleanupStaged(cfg, logf)
 	if !cfg.NoRelaunch && cfg.Relaunch != "" {
 		if err := relaunchTarget(cfg.Relaunch); err != nil {
 			logf("relaunch failed: %v", err)
@@ -142,13 +145,63 @@ func applyBinary(cfg helperConfig, logf func(string, ...any)) error {
 	if err := os.Rename(target, backup); err != nil {
 		return fmt.Errorf("备份旧版本失败：%w", err)
 	}
-	if err := copyFile(cfg.Staged, target, 0o755); err != nil {
+	restore := func() {
+		_ = os.Remove(target)
 		_ = os.Rename(backup, target)
-		return fmt.Errorf("写入新版本失败：%w", err)
 	}
-	_ = os.Chmod(target, 0o755)
-	logf("binary replaced: %s", target)
+	var lastErr error
+	for attempt := 0; attempt < 12; attempt++ {
+		if err := copyFile(cfg.Staged, target, 0o755); err != nil {
+			lastErr = err
+		} else if err := verifyFile(cfg.Staged, target); err != nil {
+			lastErr = err
+		} else {
+			_ = os.Chmod(target, 0o755)
+			logf("binary replaced and verified: %s", target)
+			return nil
+		}
+		time.Sleep(250 * time.Millisecond)
+	}
+	restore()
+	return fmt.Errorf("写入或校验新版本失败：%w", lastErr)
+}
+
+func cleanupStaged(cfg helperConfig, logf func(string, ...any)) {
+	if strings.TrimSpace(cfg.LogPath) == "" {
+		return
+	}
+	staged := filepath.Join(filepath.Dir(cfg.LogPath), "staged.json")
+	if err := os.Remove(staged); err != nil && !os.IsNotExist(err) {
+		logf("cleanup staged state failed: %v", err)
+	}
+}
+
+func verifyFile(src, dst string) error {
+	srcSum, err := fileSHA256(src)
+	if err != nil {
+		return err
+	}
+	dstSum, err := fileSHA256(dst)
+	if err != nil {
+		return err
+	}
+	if !strings.EqualFold(srcSum, dstSum) {
+		return fmt.Errorf("校验不一致：source=%s target=%s", srcSum, dstSum)
+	}
 	return nil
+}
+
+func fileSHA256(path string) (string, error) {
+	f, err := os.Open(path)
+	if err != nil {
+		return "", err
+	}
+	defer f.Close()
+	h := sha256.New()
+	if _, err := io.Copy(h, f); err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(h.Sum(nil)), nil
 }
 
 func applyApp(cfg helperConfig, logf func(string, ...any)) error {

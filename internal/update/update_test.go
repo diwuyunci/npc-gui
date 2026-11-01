@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"npc-gui/internal/ghrelease"
+	"npc-gui/internal/model"
 )
 
 func TestAppAssetName(t *testing.T) {
@@ -93,5 +94,60 @@ func TestParseHelperArgs(t *testing.T) {
 	}
 	if _, err := parseHelperArgs([]string{"--target", "/x"}); err == nil {
 		t.Fatal("expected missing staged error")
+	}
+}
+
+func TestLoadStagedDropsCompletedVersion(t *testing.T) {
+	dir := t.TempDir()
+	updates := filepath.Join(dir, "updates")
+	if err := os.MkdirAll(updates, 0o700); err != nil {
+		t.Fatal(err)
+	}
+	stagedBin := filepath.Join(updates, "npc-gui.exe")
+	if err := os.WriteFile(stagedBin, []byte("new"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	statePath := filepath.Join(updates, "staged.json")
+	if err := writeJSON(statePath, stagedState{Version: "0.2.0", StagedBin: stagedBin, Kind: "binary"}); err != nil {
+		t.Fatal(err)
+	}
+	m := &Manager{dataDir: dir, repo: "test/repo", currentVersion: "0.2.0", state: model.UpdateStateInfo{State: model.UpdateIdle}}
+	m.loadStaged()
+	if m.state.State != model.UpdateIdle {
+		t.Fatalf("state = %s, want idle", m.state.State)
+	}
+	if _, err := os.Stat(statePath); !os.IsNotExist(err) {
+		t.Fatalf("staged state still exists: %v", err)
+	}
+}
+
+func TestRunHelperCleansStagedState(t *testing.T) {
+	dir := t.TempDir()
+	updates := filepath.Join(dir, "updates")
+	if err := os.MkdirAll(updates, 0o700); err != nil {
+		t.Fatal(err)
+	}
+	target := filepath.Join(dir, "npc-gui.exe")
+	staged := filepath.Join(updates, "npc-gui_0.2.0_windows_amd64.exe")
+	if err := os.WriteFile(target, []byte("old"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(staged, []byte("new"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := writeJSON(filepath.Join(updates, "staged.json"), stagedState{Version: "0.2.0", StagedBin: staged, Kind: "binary"}); err != nil {
+		t.Fatal(err)
+	}
+	logPath := filepath.Join(updates, "update.log")
+	code := RunHelper([]string{"--apply-update", "--target", target, "--staged", staged, "--kind", "binary", "--log", logPath, "--no-relaunch"})
+	if code != 0 {
+		t.Fatalf("helper exit = %d", code)
+	}
+	data, err := os.ReadFile(target)
+	if err != nil || string(data) != "new" {
+		t.Fatalf("target = %q, err=%v", data, err)
+	}
+	if _, err := os.Stat(filepath.Join(updates, "staged.json")); !os.IsNotExist(err) {
+		t.Fatalf("staged state still exists: %v", err)
 	}
 }
