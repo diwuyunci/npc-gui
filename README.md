@@ -31,7 +31,7 @@ More screenshots are in [docs/screenshots](docs/screenshots).
 
 ## Build and run
 
-Development requires Go 1.25.x, Node.js 22.x, pnpm 10.x, and Wails v2.12.0. macOS also requires Xcode Command Line Tools. Windows builds require the WebView2 Runtime. Linux builds require GTK3 and WebKit2GTK 4.1.
+Development requires Go 1.25.x, Node.js 22.x, pnpm 10.x, and Wails v2.12.0. macOS also requires Xcode Command Line Tools. Windows builds require the WebView2 Runtime and NSIS for installer packaging. Linux builds require GTK3 and WebKit2GTK 4.1.
 
 Install and verify the Wails CLI:
 
@@ -59,7 +59,7 @@ The build output includes the macOS application at build/bin/npc-gui.app and pla
 
 ## Releases
 
-Release artifacts are published on GitHub Releases: macOS .app.zip, Windows .exe, and Linux .tar.gz. On first launch, the application offers to download npc, select a local npc binary, or detect npc on PATH.
+Release artifacts are published on GitHub Releases: macOS .app.zip, a Windows NSIS installer, a Windows portable .exe, and Linux .tar.gz. On first launch, the application offers to download npc, select a local npc binary, or detect npc on PATH.
 
 ## Contributing
 

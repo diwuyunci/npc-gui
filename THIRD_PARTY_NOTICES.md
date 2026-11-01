@@ -36,6 +36,12 @@ If a future distribution bundles npc, the distributor must satisfy GPLv3 source-
 - License: BSD 2-Clause
 - Use: cross-platform desktop notifications.
 
+## NSIS
+
+- Project: [NSIS](https://nsis.sourceforge.io/)
+- License: zlib/libpng
+- Use: Windows installer packaging.
+
 ## golang.org/x/sys
 
 - Project: [golang.org/x/sys](https://pkg.go.dev/golang.org/x/sys)

@@ -57,6 +57,12 @@ jobs:
       - name: Install Linux build dependencies
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev
+      - name: Install NSIS
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          choco install nsis -y --no-progress
+          Add-Content -Path $env:GITHUB_PATH -Value "C:\Program Files (x86)\NSIS"
       - name: Install frontend dependencies
         working-directory: frontend
         run: pnpm install --frozen-lockfile
@@ -110,7 +116,7 @@ jobs:
 
             ### 安装
             - macOS: 下载 npc-gui_..._darwin_<arch>.app.zip，解压后拖入“应用程序”。
-            - Windows: 下载 npc-gui_..._windows_amd64.exe。
+            - Windows: 下载 npc-gui_..._windows_amd64_installer.exe 安装，或使用 npc-gui_..._windows_amd64.exe 便携版。
             - Linux: 下载 npc-gui_..._linux_amd64.tar.gz，解压后运行 npc-gui。
 
             ### 自动更新

@@ -39,6 +39,9 @@ const wailsArgs = ['build', '-clean', '-platform', platform, '-ldflags', ldflags
 if (goos === 'linux') {
   wailsArgs.push('-tags', 'webkit2_41')
 }
+if (goos === 'windows') {
+  wailsArgs.push('-nsis')
+}
 const build = spawnSync(
   wailsBin,
   wailsArgs,
@@ -79,6 +82,13 @@ if (goos === 'darwin') {
     process.exit(1)
   }
   fs.copyFileSync(exe, path.join(dist, baseName + '.exe'))
+  const binDir = path.join(root, 'build', 'bin')
+  const installer = fs.readdirSync(binDir).find((name) => name.endsWith('-installer.exe'))
+  if (!installer) {
+    console.error('Missing NSIS installer under:', binDir)
+    process.exit(1)
+  }
+  fs.copyFileSync(path.join(binDir, installer), path.join(dist, baseName + '_installer.exe'))
 } else {
   const binary = path.join(root, 'build', 'bin', 'npc-gui')
   if (!fs.existsSync(binary)) {

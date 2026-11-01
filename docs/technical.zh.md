@@ -146,10 +146,11 @@ online/reconnecting -> stopping -> stopped
 | macOS arm64 | npc-gui_<version>_darwin_arm64.app.zip |
 | macOS amd64 | npc-gui_<version>_darwin_amd64.app.zip |
 | Windows amd64 | npc-gui_<version>_windows_amd64.exe |
+| Windows amd64 安装器 | npc-gui_<version>_windows_amd64_installer.exe |
 | Linux amd64 | npc-gui_<version>_linux_amd64.tar.gz |
 | 全部 | checksums.txt |
 
-macOS 更新完整 .app，Windows 和 Linux 更新可执行文件。
+macOS 更新完整 .app，Windows 和 Linux 更新可执行文件。Windows 便携版 .exe 继续作为自动更新资产；NSIS 安装器把应用安装到 %LOCALAPPDATA%\Programs 并写入当前用户卸载项，因此更新器无需提权即可替换可执行文件。
 
 ### 检查、下载与校验
 
@@ -176,7 +177,7 @@ macOS 应用位于 AppTranslocation 或只读目录时，客户端拒绝自动�
 
 ### 开发构建
 
-本地开发构建使用 dev 版本号，默认不检查客户端更新。构建命令如下：
+本地开发构建使用 dev 版本号，默认不检查客户端更新。Windows 安装器构建需要 NSIS 提供的 makensis。构建命令如下：
 
 ~~~bash
 ./scripts/build-local.sh

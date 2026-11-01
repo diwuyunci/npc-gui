@@ -31,7 +31,7 @@ NPC GUI 面向需要长期运行内网穿透连接的个人开发者和运维人
 
 ## 构建与运行
 
-开发环境需要 Go 1.25.x、Node.js 22.x、pnpm 10.x 和 Wails v2.12.0。macOS 还需要 Xcode Command Line Tools；Windows 构建需要 WebView2 Runtime；Linux 构建需要 GTK3 和 WebKit2GTK 4.1。
+开发环境需要 Go 1.25.x、Node.js 22.x、pnpm 10.x 和 Wails v2.12.0。macOS 还需要 Xcode Command Line Tools；Windows 构建需要 WebView2 Runtime 和 NSIS；Linux 构建需要 GTK3 和 WebKit2GTK 4.1。
 
 安装并检查 Wails CLI：
 
@@ -59,7 +59,7 @@ wails dev
 
 ## 发布版本
 
-发布版本由 GitHub Releases 提供，包含 macOS .app.zip、Windows .exe 和 Linux .tar.gz。首次启动时，应用提供下载 npc、选择本地 npc 或检测 PATH 三种方式。
+发布版本由 GitHub Releases 提供，包含 macOS .app.zip、Windows NSIS 安装器、Windows 便携版 .exe 和 Linux .tar.gz。首次启动时，应用提供下载 npc、选择本地 npc 或检测 PATH 三种方式。
 
 ## 参与贡献
 

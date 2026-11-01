@@ -146,10 +146,11 @@ The data directory contains:
 | macOS arm64 | npc-gui_<version>_darwin_arm64.app.zip |
 | macOS amd64 | npc-gui_<version>_darwin_amd64.app.zip |
 | Windows amd64 | npc-gui_<version>_windows_amd64.exe |
+| Windows amd64 installer | npc-gui_<version>_windows_amd64_installer.exe |
 | Linux amd64 | npc-gui_<version>_linux_amd64.tar.gz |
 | All | checksums.txt |
 
-macOS updates the complete .app; Windows and Linux update the executable.
+macOS updates the complete .app; Windows and Linux update the executable. The portable Windows .exe remains the update asset. The NSIS installer installs the application under %LOCALAPPDATA%\Programs with a per-user uninstall entry, so the updater can replace the executable without elevation.
 
 ### Check, download, and verify
 
@@ -176,7 +177,7 @@ When the macOS application is translocated or in a read-only directory, the clie
 
 ### Development builds
 
-Local development builds use a dev version and do not check for client updates. Build with:
+Local development builds use a dev version and do not check for client updates. Windows installer builds require makensis from NSIS. Build with:
 
 ~~~bash
 ./scripts/build-local.sh
