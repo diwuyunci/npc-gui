@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="teal" gradientUnits="userSpaceOnUse" x1="0" y1="160" x2="0" y2="380">
+      <stop offset="0" stop-color="#a5ffed"/>
+      <stop offset="0.45" stop-color="#5be7c8"/>
+      <stop offset="1" stop-color="#25bfa0"/>
+    </linearGradient>
+    <linearGradient id="indigo" gradientUnits="userSpaceOnUse" x1="0" y1="160" x2="0" y2="380">
+      <stop offset="0" stop-color="#b8c4ff"/>
+      <stop offset="0.5" stop-color="#8fa3ff"/>
+      <stop offset="1" stop-color="#6179ef"/>
+    </linearGradient>
+    <linearGradient id="beam" gradientUnits="userSpaceOnUse" x1="175" y1="193" x2="337" y2="345">
+      <stop offset="0" stop-color="#5be7c8" stop-opacity="0.2"/>
+      <stop offset="0.5" stop-color="#bffcf1" stop-opacity="0.8"/>
+      <stop offset="1" stop-color="#8fa3ff" stop-opacity="0.2"/>
+    </linearGradient>
+  </defs>
+  <g fill="none" stroke-linecap="round">
+    <path d="M154 364V172" stroke="url(#teal)" stroke-width="52"/>
+    <path d="M358 364V172" stroke="url(#indigo)" stroke-width="52"/>
+  </g>
+  <path d="M175 193 337 345" stroke="url(#beam)" stroke-width="17" stroke-linecap="round"/>
+  <g>
+    <circle cx="205" cy="219" r="17" fill="#0b171d" stroke="#5be7c8" stroke-width="5"/>
+    <circle cx="205" cy="219" r="5.5" fill="#a5ffed"/>
+    <circle cx="256" cy="269" r="24" fill="#0b171d" stroke="#d8fff8" stroke-width="7"/>
+    <circle cx="256" cy="269" r="8" fill="#ffffff"/>
+    <circle cx="307" cy="319" r="17" fill="#0b171d" stroke="#8fa3ff" stroke-width="5"/>
+    <circle cx="307" cy="319" r="5.5" fill="#dfe5ff"/>
+  </g>
+</svg>

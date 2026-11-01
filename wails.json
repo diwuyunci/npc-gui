@@ -1,0 +1,20 @@
+{
+  "$schema": "https://wails.io/schemas/config.v2.json",
+  "name": "npc-gui",
+  "outputfilename": "npc-gui",
+  "frontend:install": "pnpm install",
+  "frontend:build": "pnpm build",
+  "frontend:dev:watcher": "pnpm dev",
+  "frontend:dev:serverUrl": "auto",
+  "author": {
+    "name": "luckyblack",
+    "email": "diwuyunci@gmail.com"
+  },
+  "info": {
+    "companyName": "NPC GUI",
+    "productName": "NPC 客户端",
+    "productVersion": "0.1.0",
+    "copyright": "Copyright 2026 NPC GUI contributors",
+    "comments": "NPS npc 桌面客户端"
+  }
+}

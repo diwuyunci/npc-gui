@@ -1,0 +1,81 @@
+:root {
+  color-scheme: dark;
+  --bg: #080c11;
+  --bg-soft: #0b1118;
+  --surface: #0f1720;
+  --surface-2: #131d28;
+  --surface-3: #182533;
+  --surface-hover: #1a2837;
+  --border: #20303f;
+  --border-soft: #172430;
+  --border-strong: #2d4358;
+  --text: #e8eff7;
+  --text-2: #a6b6c7;
+  --text-3: #72869b;
+  --text-4: #526579;
+  --accent: #56e0c0;
+  --accent-strong: #2fd0ad;
+  --accent-soft: rgba(86, 224, 192, 0.12);
+  --accent-2: #8da2ff;
+  --accent-2-soft: rgba(141, 162, 255, 0.12);
+  --ok: #46d597;
+  --ok-soft: rgba(70, 213, 151, 0.12);
+  --warn: #f0b45a;
+  --warn-soft: rgba(240, 180, 90, 0.12);
+  --error: #ff7d88;
+  --error-soft: rgba(255, 125, 136, 0.12);
+  --info: #6fb8ff;
+  --info-soft: rgba(111, 184, 255, 0.12);
+  --purple: #c49cff;
+  --purple-soft: rgba(196, 156, 255, 0.12);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.32);
+  --shadow-md: 0 12px 30px rgba(0, 0, 0, 0.28);
+  --shadow-lg: 0 26px 70px rgba(0, 0, 0, 0.42);
+  --radius-sm: 7px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+  --font-mono: 'SFMono-Regular', ui-monospace, 'JetBrains Mono', Menlo, Consolas, 'Liberation Mono',
+    monospace;
+  --nav-width: 226px;
+  --content-max: 1500px;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --speed: 180ms;
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+  --bg: #eef2f6;
+  --bg-soft: #f5f7fa;
+  --surface: #ffffff;
+  --surface-2: #f7f9fc;
+  --surface-3: #eef3f8;
+  --surface-hover: #e9f0f7;
+  --border: #d8e1ea;
+  --border-soft: #e6edf4;
+  --border-strong: #b9c8d6;
+  --text: #101c28;
+  --text-2: #4b5f72;
+  --text-3: #708499;
+  --text-4: #94a4b5;
+  --accent: #0e9f84;
+  --accent-strong: #0a806b;
+  --accent-soft: rgba(14, 159, 132, 0.1);
+  --accent-2: #4c63d2;
+  --accent-2-soft: rgba(76, 99, 210, 0.1);
+  --ok: #0e9f6e;
+  --ok-soft: rgba(14, 159, 110, 0.1);
+  --warn: #b97812;
+  --warn-soft: rgba(185, 120, 18, 0.1);
+  --error: #d33d4b;
+  --error-soft: rgba(211, 61, 75, 0.1);
+  --info: #2372c9;
+  --info-soft: rgba(35, 114, 201, 0.1);
+  --purple: #7b4fd1;
+  --purple-soft: rgba(123, 79, 209, 0.1);
+  --shadow-sm: 0 1px 2px rgba(20, 40, 60, 0.08);
+  --shadow-md: 0 12px 30px rgba(20, 40, 60, 0.1);
+  --shadow-lg: 0 26px 70px rgba(20, 40, 60, 0.16);
+}
